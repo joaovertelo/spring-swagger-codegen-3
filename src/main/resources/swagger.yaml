@@ -26,17 +26,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
           application/xml:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
       responses:
-        default:
+        200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserResponse'
     get:
       tags:
         - users
@@ -51,7 +51,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: '#/components/schemas/UserResponse'
   /users/{id}:
     get:
       tags:
@@ -72,7 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserResponse'
         '404':
           description: User not found
     put:
@@ -92,14 +92,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserResponse'
         '404':
           description: User not found
     delete:
@@ -121,7 +121,32 @@ paths:
           description: User not found
 components:
   schemas:
-    User:
+    UserRequest:
+      type: object
+      required:
+        - username
+        - name
+      properties:
+        username:
+          type: string
+          example: theUser
+        name:
+          type: string
+          example: John
+          minLength: 3
+          maxLength: 20
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+        status:
+          $ref: '#/components/schemas/UserStatus'
+    UserResponse:
       type: object
       properties:
         id:
@@ -142,21 +167,14 @@ components:
         password:
           type: string
           example: '12345'
-        userStatus:
-          type: string
-          description: User Status
-          enum: [ACTIVE, INACTIVE]
-          example: ACTIVE
+        status:
+          $ref: '#/components/schemas/UserStatus'
         createdAt:
           type: string
           description: create date
           format: date-time
-  requestBodies:
-    UserArray:
-      description: List of user object
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/User'
+    UserStatus:
+      type: string
+      description: User Status
+      enum: [ ACTIVE, INACTIVE ]
+      example: ACTIVE
